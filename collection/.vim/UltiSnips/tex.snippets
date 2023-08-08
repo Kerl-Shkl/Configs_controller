@@ -1,0 +1,378 @@
+global !p
+def math():
+	return vim.eval('vimtex#syntax#in_mathzone()') == '1'
+
+def comment(): 
+	return vim.eval('vimtex#syntax#in_comment()') == '1'
+
+def env(name):
+	[x,y] = vim.eval("vimtex#env#is_inside('" + name + "')") 
+	return x != '0' and y != '0'
+
+def create_table(snip):
+	rows = snip.buffer[snip.line].split('x')[0]
+	cols = snip.buffer[snip.line].split('x')[1]
+	int_val = lambda string: int(''.join(s for s in string if s.isdigit()))
+	rows = int_val(rows)
+	cols = int_val(cols)
+	offset = cols + 1
+	old_spacing = snip.buffer[snip.line][:snip.buffer[snip.line].rfind('\t') + 1]
+	snip.buffer[snip.line] = ''
+	final_str = old_spacing + "\\begin{tabular}{|" + "|".join(['$' + str(i + 1) for i in range(cols)]) + "|}\n"
+	for i in range(rows):
+		final_str += old_spacing + '\t'
+		final_str += " & ".join(['$' + str(i * cols + j + offset) for j in range(cols)])
+		final_str += " \\\\\\\n"
+	final_str += old_spacing + "\\end{tabular}\n$0"
+	snip.expand_anon(final_str)
+
+def add_row(snip):
+	row_len = int(''.join(s for s in snip.buffer[snip.line] if s.isdigit()))
+	old_spacing = snip.buffer[snip.line][:snip.buffer[snip.line].rfind('\t') + 1]
+	snip.buffer[snip.line] = ''
+	final_str = old_spacing
+	final_str += " & ".join(['$' + str(j + 1) for j in range(row_len)])
+	final_str += " \\\\\\"
+	snip.expand_anon(final_str)
+endglobal
+
+snippet beg "begin{} / end{}" bA
+\\begin{$1}
+	$0
+\\end{$1}
+endsnippet
+
+snippet fig "Figure environment" b
+\begin{figure}[${1:htpb}]
+	\centering
+	${2:\includegraphics[width=0.8\textwidth]{$3}}
+	\caption{${4:$3}}
+	\label{fig:${5:${3/\W+/-/g}}}
+\end{figure}
+endsnippet
+
+snippet enum "Enumerate" bA
+\begin{enumerate}
+	\item $0
+\end{enumerate}
+endsnippet
+
+snippet item "Itemize" bA
+\begin{itemize}
+	\item $0
+\end{itemize}
+endsnippet
+
+snippet mk "Math" wA
+$${1}$`!p
+if t[2] and t[2][0] not in [',', '.', '?', '-']:
+	snip.rv = ' '
+else:
+	snip.rv = ''
+`$2
+endsnippet
+
+snippet dm "Math" wA
+\[
+  ${1:${VISUAL}}
+\] $0
+endsnippet
+
+snippet ali "Align" bA
+\begin{aligned}
+	${1:${VISUAL}}
+\end{aligned}
+endsnippet
+
+snippet != "equals" iA
+\neq 
+endsnippet
+
+snippet == "equals" iA
+&= $1 \\\\
+endsnippet
+
+snippet pmat "pmat" iA
+\begin{pmatrix} $1 \end{pmatrix} $0
+endsnippet
+
+snippet bmat "bmat" iA
+\begin{bmatrix} $1 \end{bmatrix} $0
+endsnippet
+
+snippet vmat "vmat" iA
+\begin{vmatrix} $1 \end{vmatrix} $0
+endsnippet
+
+snippet part "d/dx" w
+\frac{\partial ${1:V}}{\partial ${2:x}} $0
+endsnippet
+
+context "math()"
+snippet sq "\sqrt{}" iA
+\sqrt{${1:${VISUAL}}} $0
+endsnippet
+
+context "math()"
+snippet td "to the ... power" iA
+^{$1}$0
+endsnippet
+
+context "math()"
+snippet rd "to the ... power" iA
+^{($1)}$0
+endsnippet
+
+snippet __ "subscript" iA
+_{$1}$0
+endsnippet
+
+snippet ooo "\infty" iA
+\infty
+endsnippet
+
+context "math()"
+snippet xnn "xn" iA
+x_{n}
+endsnippet
+
+context "math()"
+snippet ynn "yn" iA
+y_{n}
+endsnippet
+
+
+context "math()"
+snippet xii "xi" iA
+x_{i}
+endsnippet
+
+context "math()"
+snippet yii "yi" iA
+y_{i}
+endsnippet
+
+context "math()"
+snippet xjj "xj" iA
+x_{j}
+endsnippet
+
+context "math()"
+snippet yjj "yj" iA
+y_{j}
+endsnippet
+
+context "math()"
+snippet xp1 "x" iA
+x_{n+1}
+endsnippet
+
+context "math()"
+snippet xmm "x" iA
+x_{m}
+endsnippet
+
+priority 100
+snippet ** "cdot" iA
+\cdot 
+endsnippet
+
+context "math()"
+snippet omeg "nabla" iA
+\omega 
+endsnippet
+
+context "math()"
+snippet lamb "lambda" iA
+\lambda
+endsnippet
+
+context "math()"
+snippet sys "left\{ right\}" iA
+\left\\{\begin{aligned} 
+  ${1:${VISUAL}}
+\end{aligned}\right. $0
+endsnippet
+
+snippet lim "limit" w
+\lim_{${1:n} \to ${2:\infty}} 
+endsnippet
+
+pre_expand "create_table(snip)"
+snippet "gentbl(\d+)x(\d+)" "Generate table of *width* by *height*" r
+endsnippet
+
+pre_expand "add_row(snip)"
+snippet "tr(\d+)" "Add table row of dimension ..." r
+endsnippet
+
+snippet table "Table environment" b
+\begin{table}[${1:htpb}]
+	\centering
+	\caption{${2:caption}}
+	\label{tab:${3:label}}
+	\begin{tabular}{${5:c}}
+	$0${5/((?<=.)c|l|r)|./(?1: & )/g}
+	\end{tabular}
+\end{table}
+endsnippet
+
+context "math()"
+snippet invs "inverse" iA
+^{-1}
+endsnippet
+
+snippet => "implies" Ai
+\implies
+endsnippet
+
+snippet =< "implied by" Ai
+\impliedby
+endsnippet
+
+context "math()"
+snippet iff "iff" Ai
+\iff
+endsnippet
+
+context "math()"
+snippet // "Fraction" iA
+\\frac{$1}{$2}$0
+endsnippet
+
+snippet / "Fraction" i
+\\frac{${VISUAL}}{$1}$0
+endsnippet
+
+context "math()"
+snippet '((\d+)|(\d*)(\\)?([A-Za-z]+)((\^|_)(\{\d+\}|\d))*)/' "symbol frac" wrA
+\\frac{`!p snip.rv = match.group(1)`}{$1}$0
+endsnippet
+
+priority 1000
+context "math()"
+snippet '^.*\)/' "() frac" wrA
+`!p
+stripped = match.string[:-1]
+depth = 0
+i = len(stripped) - 1
+while True:
+	if stripped[i] == ')': depth += 1
+	if stripped[i] == '(': depth -= 1
+	if depth == 0: break;
+	i-=1
+snip.rv = stripped[0:i] + "\\frac{" + stripped[i+1:-1] + "}"
+`{$1}$0
+endsnippet
+
+snippet sum "sum" w
+\sum_{n=${1:1}}^{${2:\infty}} ${3:a_n z^n}
+endsnippet
+
+snippet <= "leq" iA
+\le 
+endsnippet
+
+snippet >= "geq" iA
+\ge 
+endsnippet
+
+context "math()"
+snippet xx "cross" iA
+\times 
+endsnippet
+
+priority 100
+context "math()"
+snippet -> "to" iA
+\to 
+endsnippet
+
+priority 200
+context "math()"
+snippet <-> "leftrightarrow" iA
+\leftrightarrow
+endsnippet
+
+context "math()"
+snippet !> "mapsto" iA
+\mapsto 
+endsnippet
+
+context "math()"
+snippet tt "text" iA
+\text{$1}$0
+endsnippet
+
+snippet sec "Section" wi
+\section{$1${VISUAL}}
+endsnippet
+
+snippet bf "textbf" wi
+\textbf{$1${VISUAL}}$0
+endsnippet
+
+snippet v! "verb!!" wA
+\verb!$1${VISUAL}!
+endsnippet
+
+snippet sec* "Section*" wi
+\section*{$1${VISUAL}}
+endsnippet
+
+snippet sub "Subsection" wi
+\subsection{$1${VISUAL}}
+endsnippet
+
+snippet sub* "Subsection*" wi
+\subsection*{$1${VISUAL}}
+endsnippet
+
+snippet subsub "Subsection" wi
+\subsubsection{$1${VISUAL}}
+endsnippet
+
+snippet subsub* "Subsubsection" wi
+\subsubsection*{$1${VISUAL}}
+endsnippet
+
+snippet par "Paragraph" wi
+\paragraph{$1${VISUAL}}
+endsnippet
+
+snippet par* "Paragraph*" wi
+\paragraph*{$1${VISUAL}}
+endsnippet
+
+snippet subpar "Sub Paragraph" wi
+\subparagraph{$1${VISUAL}}
+endsnippet
+
+snippet subpar* "Sub Paragraph*" wi
+\subparagraph*{$1${VISUAL}}
+endsnippet
+
+context "math()"
+snippet sr "^2" iA
+^2
+endsnippet
+
+context "math()"
+snippet cb "^3" iA
+^3
+endsnippet
+
+context "env("tikzpicture")"
+snippet nn "Tikz node" w
+\node[$3] (${2}) {${1}};
+endsnippet
+
+context "env("tikzpicture")"
+snippet arr "Tikz arrow" w
+\draw[arrow] (${1}) -- (${2});
+endsnippet
+
+# For pASSenik
+snippet acc "Accord" iA
+\Ch{$1}
+endsnippet
