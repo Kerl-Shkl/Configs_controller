@@ -172,7 +172,7 @@ diff_file() {
     if [[ -d $COLLECTION_DIR ]]; then 
         if [[ -f $2 ]]; then 
             if [[ -f ${COLLECTION_DIR}/${1} ]]; then 
-                diff --exclude-from=${EXCLUDE} -u $2 ${COLLECTION_DIR}/${1}
+                diff --exclude-from=${EXCLUDE} -c $2 ${COLLECTION_DIR}/${1}
             else
                 echo "There is no ${COLLECTION_DIR}/${1} file"
             fi
@@ -183,6 +183,27 @@ diff_file() {
         echo "There is no collection"
     fi
     
+}
+
+diff_dir () {
+    if (( $# != 2 )); then
+        echo "To few args for diff_dir function"
+        exit 1
+    fi
+
+    if [[ -d $COLLECTION_DIR ]]; then 
+        if [[ -d $2 ]]; then 
+            if [[ -d ${COLLECTION_DIR}/${1} ]]; then 
+                diff --exclude-from=${EXCLUDE} -c -r $2 ${COLLECTION_DIR}/${1}
+            else
+                echo "There is no ${COLLECTION_DIR}/${1} directory"
+            fi
+        else
+            echo "There is no ${2} directory"
+        fi
+    else 
+        echo "There is no collection"
+    fi
 }
 
 # while [[ -n $1 ]]; do 
@@ -254,4 +275,5 @@ diff_file() {
 #     esac
 # done
 
-diff_file $ALACRITTY $ALACRITTY_CONFIG
+# diff_file $ALACRITTY $ALACRITTY_CONFIG
+diff_dir $VIM $VIM_CONFIG
