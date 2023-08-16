@@ -163,73 +163,95 @@ place_dir () {
     fi
 }
 
-
-
-while [[ -n $1 ]]; do 
-    case $1 in 
-        -c | --collect) 
-            if [[ -z $mode ]]; then 
-                mode="collect"
-            else 
-                echo "there can be only one mode: -c or -p"
-                exit 1
+diff_file() {
+    if (( $# != 2 )); then
+        echo "To few args for diff_file function"
+        exit 1
+    fi
+    
+    if [[ -d $COLLECTION_DIR ]]; then 
+        if [[ -f $2 ]]; then 
+            if [[ -f ${COLLECTION_DIR}/${1} ]]; then 
+                diff --exclude-from=${EXCLUDE} -u $2 ${COLLECTION_DIR}/${1}
+            else
+                echo "There is no ${COLLECTION_DIR}/${1} file"
             fi
-            ;;
-        -p | --place) 
-            if [[ -z $mode ]]; then 
-                mode="place"
-            else 
-                echo "there can be only one mode: -c or -p"
-                exit 1
-            fi
-            ;;
-        -a | --all)
-            configs_arr+=( i3 )
-            configs_arr+=( alacritty )
-            configs_arr+=( vim )
-            ;;
-        --i3)
-            configs_arr+=( i3 )
-            ;;
-        --vim)
-            configs_arr+=( vim )
-            ;;
-        --alacritty)
-            configs_arr+=( alacritty )
-            ;;
-        *)
-            echo "Invalid parameters"
-            exit 1;
-            ;;
-    esac
-    shift
-done
+        else
+            echo "There is no ${2} file"
+        fi
+    else 
+        echo "There is no collection"
+    fi
+    
+}
 
-if (( ${#configs_arr[@]} == 0)); then
-    configs_arr+=( i3 )
-    configs_arr+=( alacritty )
-    configs_arr+=( vim )
-fi
+# while [[ -n $1 ]]; do 
+#     case $1 in 
+#         -c | --collect) 
+#             if [[ -z $mode ]]; then 
+#                 mode="collect"
+#             else 
+#                 echo "there can be only one mode: -c or -p"
+#                 exit 1
+#             fi
+#             ;;
+#         -p | --place) 
+#             if [[ -z $mode ]]; then 
+#                 mode="place"
+#             else 
+#                 echo "there can be only one mode: -c or -p"
+#                 exit 1
+#             fi
+#             ;;
+#         -a | --all)
+#             configs_arr+=( i3 )
+#             configs_arr+=( alacritty )
+#             configs_arr+=( vim )
+#             ;;
+#         --i3)
+#             configs_arr+=( i3 )
+#             ;;
+#         --vim)
+#             configs_arr+=( vim )
+#             ;;
+#         --alacritty)
+#             configs_arr+=( alacritty )
+#             ;;
+#         *)
+#             echo "Invalid parameters"
+#             exit 1;
+#             ;;
+#     esac
+#     shift
+# done
+# 
+# if (( ${#configs_arr[@]} == 0)); then
+#     configs_arr+=( i3 )
+#     configs_arr+=( alacritty )
+#     configs_arr+=( vim )
+# fi
+# 
+# for i in ${configs_arr[*]}; do
+#     case $i in 
+#         i3) 
+#             [[ $mode == "collect" ]] && \
+#                 collect_dir $I3 $I3_CONFIG
+#             [[ $mode == "place" ]] && \
+#                 place_dir $I3 $I3_CONFIG
+#             ;;
+#         vim)
+#             [[ $mode == "collect" ]] && \
+#                 collect_dir $VIM $VIM_CONFIG
+#             [[ $mode == "place" ]] && \
+#                 place_dir $VIM $VIM_CONFIG
+#             ;;
+#         alacritty)
+#             [[ $mode == "collect" ]] && \
+#                 collect_file $ALACRITTY $ALACRITTY_CONFIG
+#             [[ $mode == "place" ]] && \
+#                 place_file $ALACRITTY $ALACRITTY_CONFIG
+#             ;;
+#     esac
+# done
 
-for i in ${configs_arr[*]}; do
-    case $i in 
-        i3) 
-            [[ $mode == "collect" ]] && \
-                collect_dir $I3 $I3_CONFIG
-            [[ $mode == "place" ]] && \
-                place_dir $I3 $I3_CONFIG
-            ;;
-        vim)
-            [[ $mode == "collect" ]] && \
-                collect_dir $VIM $VIM_CONFIG
-            [[ $mode == "place" ]] && \
-                place_dir $VIM $VIM_CONFIG
-            ;;
-        alacritty)
-            [[ $mode == "collect" ]] && \
-                collect_file $ALACRITTY $ALACRITTY_CONFIG
-            [[ $mode == "place" ]] && \
-                place_file $ALACRITTY $ALACRITTY_CONFIG
-            ;;
-    esac
-done
+diff_file $ALACRITTY $ALACRITTY_CONFIG
