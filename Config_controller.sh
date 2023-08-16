@@ -12,6 +12,7 @@ VIM_CONFIG=~/${VIM}
 I3=.i3
 I3_CONFIG=~/${I3}
 COLLECTION_DIR=~/work/bash_scripts/Configs_controller/collection
+EXCLUDE="/home/kerl/work/bash_scripts/Configs_controller/excludes"
 
 mode=
 declare -a configs_arr
@@ -106,13 +107,13 @@ collect_dir () {
                   $(get_recent_file $2) ]]; then
 
                 confirm $1: $MSG_COLNEW && \
-                    rsync -a --exclude-from="/home/kerl/work/bash_scripts/Configs_controller/excludes" --delete ${2}/ ${COLLECTION_DIR}/${1}
+                    rsync -a --exclude-from=${EXCLUDE} --delete ${2}/ ${COLLECTION_DIR}/${1}
             else 
-                rsync -a --exclude-from="/home/kerl/work/bash_scripts/Configs_controller/excludes" --delete ${2}/ ${COLLECTION_DIR}/${1}
+                rsync -a --exclude-from=${EXCLUDE} --delete ${2}/ ${COLLECTION_DIR}/${1}
             fi
         else
             mkdir ${COLLECTION_DIR}/${1}
-            rsync -a --exclude-from="/home/kerl/work/bash_scripts/Configs_controller/excludes" ${2}/ ${COLLECTION_DIR}/${1}
+            rsync -a --exclude-from=${EXCLUDE} ${2}/ ${COLLECTION_DIR}/${1}
         fi
     else
         echo "$2 is not exist"
@@ -138,16 +139,16 @@ place_dir () {
                   $(get_recent_file ${COLLECTION_DIR}/${1}) ]]; then
 
             confirm $1:  $MSG_CONNEW && \
-                rsync -a --exclude-from="/home/kerl/work/bash_scripts/Configs_controller/excludes" --delete ${COLLECTION_DIR}/${1}/ ${2}
+                rsync -a --exclude-from=${EXCLUDE} --delete ${COLLECTION_DIR}/${1}/ ${2}
 
             else
-            rsync -a --exclude-from="/home/kerl/work/bash_scripts/Configs_controller/excludes" --delete ${COLLECTION_DIR}/${1}/ ${2}
+            rsync -a --exclude-from=${EXCLUDE} --delete ${COLLECTION_DIR}/${1}/ ${2}
             fi
         else
             read -p "Make copy of $1 or make link? (c/l): "
             case $REPLY in
                 c|C)
-                    rsync -a --exclude-from="/home/kerl/work/bash_scripts/Configs_controller/excludes" ${COLLECTION_DIR}/${1}/ ${2}
+                    rsync -a --exclude-from=${EXCLUDE} ${COLLECTION_DIR}/${1}/ ${2}
                     ;;
                 l|L)
                     ln -s ${COLLECTION_DIR}/${1} ${2}
@@ -161,6 +162,7 @@ place_dir () {
         echo "There is no $1 config in the collection"
     fi
 }
+
 
 
 while [[ -n $1 ]]; do 
