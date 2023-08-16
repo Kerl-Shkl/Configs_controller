@@ -60,6 +60,7 @@ imap <silent> <C-l> <Plug>(YCMToggleSignatureHelp)
 
 let g:ycm_enable_semantic_highlighting=1
 let g:ycm_enable_inlay_hints=0
+"leg g:ycm_clear_inlay_hints_in_insert_mode=1
 let g:ycm_enable_diagnostic_signs=1
 hi link YcmInlayHint Comment
 nnoremap <silent> <localleader>h <Plug>(YCMToggleInlayHints)
@@ -71,7 +72,21 @@ let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 let g:SuperTabDefaultCompletionType = '<C-n>'
 
+let g:ycm_semantic_triggers =  {
+  \   'c': ['->', '.'],
+  \   'objc': ['->', '.', 're!\[[_a-zA-Z]+\w*\s', 're!^\s*[^\W\d]\w*\s',
+  \            're!\[.*\]\s'],
+  \   'ocaml': ['.', '#'],
+  \   'cpp,cuda,objcpp': ['->', '.', '::'],
+  \   'perl': ['->'],
+  \   'php': ['->', '::'],
+  \   'cs,d,elixir,go,groovy,java,javascript,julia,perl6,python,scala,typescript,vb': ['.'],
+  \   'ruby,rust': ['.', '::'],
+  \   'lua': ['.', ':'],
+  \   'erlang': [':'],
+  \ }
 
+let g:ycm_autoclose_preview_window_after_completion=1
 "let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
 
 "================================
@@ -92,9 +107,17 @@ colorscheme gruvbox
 
 "=================Snippets================
 let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips']
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+"let g:UltiSnipsExpandTrigger = "<tab>"
+"let g:UltiSnipsJumpForwardTrigger = "<tab>"
+"let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+
+" UltiSnips triggering :
+"  - ctrl-j to expand
+"  - ctrl-j to go to next tabstop
+"  - ctrl-k to go to previous tabstop
+let g:UltiSnipsExpandTrigger = '<C-j>'
+let g:UltiSnipsJumpForwardTrigger = '<C-j>'
+let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
 "=========================================
 
 
