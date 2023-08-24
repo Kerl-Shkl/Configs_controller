@@ -172,7 +172,7 @@ diff_file() {
     if [[ -d $COLLECTION_DIR ]]; then 
         if [[ -f $2 ]]; then 
             if [[ -f ${COLLECTION_DIR}/${1} ]]; then 
-                diff --exclude-from=${EXCLUDE} -c $2 ${COLLECTION_DIR}/${1}
+                diff --exclude-from=${EXCLUDE} -c ${COLLECTION_DIR}/${1} $2
             else
                 echo "There is no ${COLLECTION_DIR}/${1} file"
             fi
@@ -194,7 +194,7 @@ diff_dir () {
     if [[ -d $COLLECTION_DIR ]]; then 
         if [[ -d $2 ]]; then 
             if [[ -d ${COLLECTION_DIR}/${1} ]]; then 
-                diff --exclude-from=${EXCLUDE} -c -r $2 ${COLLECTION_DIR}/${1}
+                diff --exclude-from=${EXCLUDE} -c -r ${COLLECTION_DIR}/${1} $2 
             else
                 echo "There is no ${COLLECTION_DIR}/${1} directory"
             fi
