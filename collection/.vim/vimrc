@@ -52,9 +52,6 @@ endfunction
 xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
 
-" Swap between header and source (foo.h and foo.c)
-map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
-
 "==============YCM================
 imap <silent> <C-l> <Plug>(YCMToggleSignatureHelp)
 
@@ -62,6 +59,7 @@ let g:ycm_enable_semantic_highlighting=1
 let g:ycm_enable_inlay_hints=0
 "leg g:ycm_clear_inlay_hints_in_insert_mode=1
 let g:ycm_enable_diagnostic_signs=1
+"let g:ycm_echo_current_diagnostic = 'virtual-text'
 hi link YcmInlayHint Comment
 nnoremap <silent> <localleader>h <Plug>(YCMToggleInlayHints)
 
@@ -89,7 +87,54 @@ let g:ycm_semantic_triggers =  {
 let g:ycm_autoclose_preview_window_after_completion=1
 "let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
 
+" diagnostic message shows in locationlist. For show full diagnostic you can
+" press '<leader>d' and ':lopen' (for close ':close')
+let g:ycm_always_populate_location_list=1
+
+nmap <leader>yfw <Plug>(YCMFindSymbolInWorkspace)
+nmap <leader>yfd <Plug>(YCMFindSymbolInDocument)
+
+" GoTo
+let g:ycm_goto_buffer_command = 'split-or-existing-window'
+nnoremap <leader>jd :tab YcmCompleter GoTo<CR>
+nnoremap <F4> :YcmCompleter GoToAlternateFile<CR>
+
+" turn off identifier completer but keep sematnic triggers
+"let g:ycm_min_num_of_chars_for_completion=99
+
+" set blacklist for ycm. May be it is worth to add tex
+"let g:ycm_filetype_blacklist = {
+"    \ 'tagbar': 1,
+"    \ 'notes': 1,
+"    \ 'markdown': 1,
+"    \ 'netrw': 1,
+"    \ 'unite': 1,
+"    \ 'text': 1,
+"    \ 'vimwiki': 1,
+"    \ 'pandoc': 1,
+"    \ 'infolog': 1,
+"    \ 'leaderf': 1,
+"    \ 'mail': 1,
+"    \}
+
+
+let g:ycm_filetype_specific_completion_to_disable = {
+    \ 'gitcommit': 1,
+    \ 'tex': 1
+    \}
+
+let g:ycm_warning_symbol = '⚠'
+let g:ycm_error_symbol = '⧯'
+
+" hover - what popup when cursor hold - settings
+nmap <leader>D <plug>(YCMHover)
+
+let g:ycm_complete_in_comments = 1
+
+let g:ycm_update_diagnostics_in_insert_mode = 1
+
 "================================
+
 
 "============NerdTree============
 
