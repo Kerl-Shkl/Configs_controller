@@ -64,12 +64,11 @@ snippet item "Itemize" bA
 endsnippet
 
 snippet mk "Math" wA
-$${1}$`!p
-if t[2] and t[2][0] not in [',', '.', '?', '-']:
-	snip.rv = ' '
-else:
-	snip.rv = ''
-`$2
+$${1}$${2}
+endsnippet
+
+snippet v! "verb!!" wA
+\verb!${1}!${2}
 endsnippet
 
 snippet dm "Math" wA
@@ -110,7 +109,7 @@ endsnippet
 
 context "math()"
 snippet sq "\sqrt{}" iA
-\sqrt{${1:${VISUAL}}} $0
+\sqrt{${1:${VISUAL}}}$0
 endsnippet
 
 context "math()"
@@ -300,6 +299,11 @@ snippet !> "mapsto" iA
 endsnippet
 
 context "math()"
+snippet disp "display style for math" iA
+\displaystyle
+endsnippet
+
+context "math()"
 snippet tt "text" iA
 \text{$1}$0
 endsnippet
@@ -372,7 +376,15 @@ snippet arr "Tikz arrow" w
 \draw[arrow] (${1}) -- (${2});
 endsnippet
 
-# For pASSenik
-snippet acc "Accord" iA
-\Ch{$1}
+snippet bf "Bold" wi
+\textbf{${1:${VISUAL}}}$0
 endsnippet
+
+snippet it "Italic" wi
+\textit{${1:${VISUAL}}}$0
+endsnippet
+
+#snippet un "Underline" wi
+#\textun{${1:${VISUAL}}}$0
+#endsnippet
+
