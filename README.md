@@ -11,7 +11,7 @@ There is three mode that control what to do with the configs.
 -  -p, --place    Place configuration files from the collection in the system
 -  -d, --diff     Show differences between configs in collection and in system
 
--  -h, --help     display this help and exit\
+-  -h, --help     display this help and exit
 
 If no config is specified, the script works for all at once. You can specify
 specific config files
