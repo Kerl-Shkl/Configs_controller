@@ -18,6 +18,8 @@ Plug 'tpope/vim-endwise'
 Plug 'terryma/vim-smooth-scroll'
 Plug 'romainl/vim-cool'
 
+Plug 'preservim/tagbar'
+
 "Plug 'ervandew/supertab'
 
 "============Colorscheme==========
@@ -200,3 +202,6 @@ noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 10, 4)<CR>
 let g:cool_total_matches = 1
 "=========================================
  
+"================Toggle Tagbar============
+nmap <F8> :TagbarToggle<CR>
+"=========================================
